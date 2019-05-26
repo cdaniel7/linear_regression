@@ -1,0 +1,22 @@
+
+# Importing the Dataset
+dataset<-read.csv(file = "~/Desktop/Salary_Data.csv")
+
+# Splitting dataset into test and train 
+library(caTools)
+set.seed(123)
+split=sample.split(dataset$Salary,SplitRatio = 2/3)
+train_set = subset(dataset,split==TRUE)
+test_set = subset(dataset,split ==FALSE)
+
+# feature scaling not necessary. Simple linear regression will take care of it 
+
+regressor = lm(formula = Salary~YearsExperience,data=train_set)
+
+y_pred = predict(regressor,newdata = test_set)
+
+library(ggplot2)
+
+ggplot()+geom_point(aes(x=train_set$YearsExperience,y=train_set$Salary),colour='red') +geom_line(aes(x=train_set$YearsExperience,y=predict(regressor,newdata = train_set)),color='blue')+ggtitle("Salary Predictions-Train Set")+xlab("Years of Exp")+ylab("Salary")
+
+ggplot()+geom_point(aes(x=test_set$YearsExperience,y=test_set$Salary),colour='red') +geom_line(aes(x=train_set$YearsExperience,y=predict(regressor,newdata = train_set)),color='blue')+ggtitle("Salary Predictions-Test Set")+xlab("Years of Exp")+ylab("Salary")
